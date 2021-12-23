@@ -10,7 +10,7 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageFont, ImageDraw
 
 des_os_app = r'/media/pi/SCSETUP/StockCubeSetup.app'
-src_os_app = r'/media/pi/SCSETUP/Software/Utils/StockCubeSetup.app'
+src_os_app = r'/media/pi/SCSETUP/github/Software/Utils/StockCubeSetup.app'
 
 global copy_done
 global percentage
@@ -156,7 +156,7 @@ for x in range(54):
     time.sleep(0.05)
     matrix.SetImage(image.convert('RGB'))
 try:
-    src_folder="/media/pi/SCSETUP/Software/"
+    src_folder="/media/pi/SCSETUP/github/Software/"
     dest_folder="/home/pi/stockcube/"
     for f in os.listdir(src_folder):
         if os.path.isfile(f):
@@ -166,7 +166,7 @@ try:
     ps = subprocess.Popen(['sudo', 'chmod', '-R', 'a+rwx', '/home/pi/stockcube/'], stdout=subprocess.PIPE)
     if os.path.isfile("/home/pi/stockcube/Version.py"):
         os.remove("/home/pi/stockcube/Version.py")
-    shutil.copy("/media/pi/SCSETUP/Setup/Version.py", "/home/pi/stockcube/")
+    shutil.copy("/media/pi/SCSETUP/github/Software/Version.py", "/home/pi/stockcube/")
     time.sleep(1)
     #ps = subprocess.Popen(['sudo', 'mv', '/media/pi/SCSETUP/Setup/Version.py', '/home/pi/stockcube/'], stdout=subprocess.PIPE)
     ps = subprocess.Popen(['sudo', 'chmod', 'a+r', '/home/pi/stockcube/Version.py'], stdout=subprocess.PIPE)
@@ -183,55 +183,66 @@ except Exception as e:
     matrix.SetImage(image.convert('RGB'))
     time.sleep(1)
 
-draw.text((0,31), "Setup tool:", (255,255,255),font=font)
+draw.text((0,33), "Setup tool:", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
 
-draw.line((4, 96, 4, 102), fill=(255,255,255))
-draw.line((59, 96, 59, 102), fill=(255,255,255))
-draw.line((4, 96, 59, 96), fill=(255,255,255))
+draw.line((4, 99, 4, 105), fill=(255,255,255))
+draw.line((59, 99, 59, 105), fill=(255,255,255))
+draw.line((4, 99, 59, 99), fill=(255,255,255))
 
-draw.line((4, 102, 59, 102), fill=(255,255,255))
+draw.line((4, 105, 59, 105), fill=(255,255,255))
 
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
 
-print("Removing existing setup app")
-if os.path.exists(des_os_app):
-    shutil.rmtree(des_os_app)
-print("Removed - starting copy of new one")
+if os.path.exists(src_os_app):
 
-copy_done = 0
-percentage = 0
+    print("Removing existing setup app")
+    if os.path.exists(des_os_app):
+        shutil.rmtree(des_os_app)
+    print("Removed - starting copy of new one")
 
-t=threading.Thread(name='copying', target=copying_file, args=(src_os_app, des_os_app))
-t.start()
-#b=threading.Thread(name='checking', target=checker, args=(src_os_app, des_os_app))
-#b.start()
+    copy_done = 0
+    percentage = 0
 
-#while copy_done < 1:
-while not os.path.exists(des_os_app):
-    print "doesn't exist"
-    time.sleep(0.5)
-
-while sum([len(files) for r,d,files in os.walk(src_os_app)]) != sum([len(files) for r,d,files in os.walk(des_os_app)]):
-#    x = (percentage/2) + 4
-#    draw.rectangle((5, 97, 5+x, 101), fill=(0,255,0), outline=(0,255,0))
-    for x in range(54):
-        draw.line((5+x, 97, 5+x, 101), fill=(0,255,0))
-        if x > 1:
-            draw.line((5+x-1, 97, 5+x-1, 101), fill=(0,200,0))
-            if x > 2:
-                draw.line((5+x-2, 97, 5+x-2, 101), fill=(0,150,0))
+    t=threading.Thread(name='copying', target=copying_file, args=(src_os_app, des_os_app))
+    t.start()
+    while not os.path.exists(des_os_app):
+        print "doesn't exist"
         time.sleep(0.5)
+
+    while sum([len(files) for r,d,files in os.walk(src_os_app)]) != sum([len(files) for r,d,files in os.walk(des_os_app)]):
+        for x in range(54):
+            draw.line((5+x, 100, 5+x, 104), fill=(0,255,0))
+            if x > 1:
+                draw.line((5+x-1, 100, 5+x-1, 104), fill=(0,200,0))
+                if x > 2:
+                    draw.line((5+x-2, 100, 5+x-2, 104), fill=(0,150,0))
+            time.sleep(0.5)
+            matrix.SetImage(image.convert('RGB'))
+
+else:
+    for x in range(54):
+        draw.line((5+x, 100, 5+x, 104), fill=(0,255,0))
+        if x > 1:
+            draw.line((5+x-1, 100, 5+x-1, 104), fill=(0,200,0))
+            if x > 2:
+                draw.line((5+x-2, 100, 5+x-2, 104), fill=(0,150,0))
+        time.sleep(0.2)
         matrix.SetImage(image.convert('RGB'))
 
-draw.rectangle((5, 97, 58, 101), fill=(0,255,0), outline=(0,255,0))
+#Now copy new version file to Setup folder of USB stick
+shutil.copy("/home/pi/stockcube/Version.py", "/media/pi/SCSETUP/Setup/")
+
+draw.rectangle((5, 100, 58, 104), fill=(0,255,0), outline=(0,255,0))
 time.sleep(1)
-draw.rectangle((4, 96, 59, 102), fill=(0,0,0), outline=(0,0,0))
-draw.text((4,95), "Complete", (0,255,0),font=font)
+draw.rectangle((4, 99, 59, 105), fill=(0,0,0), outline=(0,0,0))
+draw.text((4,98), "Complete", (0,255,0),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(1)
+
+shutil.rmtree("/media/pi/SCSETUP/github/")
 
 font=ImageFont.load("/home/pi/fonts/7x13B.pil")
 draw.text((20,50), "Update", (0,255,0),font=font)
