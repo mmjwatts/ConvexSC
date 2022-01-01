@@ -167,7 +167,7 @@ do
     fi
     source $SETUP_PATH/mode1.py
     cp /home/pi/stocks_demo1.txt /home/pi/stocks_demo.txt
-    $SW_PATH/SC_mode1 --led-rgb-sequence="$ColourMap" -b $modeBrightness &
+    nice -n -20 $SW_PATH/SC_mode1 --led-rgb-sequence="$ColourMap" -b $modeBrightness &
     process=$!
 
     read mode1 < $GPIO_PATH/gpio2/value
@@ -201,7 +201,7 @@ do
     fi
     source $SETUP_PATH/mode2.py
     cp /home/pi/stocks_demo2.txt /home/pi/stocks_demo.txt
-    $SW_PATH/SC_mode2 --led-rgb-sequence="$ColourMap" -b $modeBrightness &
+    nice -n -20 $SW_PATH/SC_mode2 --led-rgb-sequence="$ColourMap" -b $modeBrightness &
     process=$!
 
     read mode2 < $GPIO_PATH/gpio3/value
