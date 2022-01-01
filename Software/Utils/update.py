@@ -9,8 +9,14 @@ import threading
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageFont, ImageDraw
 
-des_os_app = r'/media/pi/SCSETUP/StockCubeSetup.app'
-src_os_app = r'/media/pi/SCSETUP/github/Software/Utils/StockCubeSetup.app'
+des_mac_app = r'/media/pi/SCSETUP/SCSetup_Mac.app'
+src_mac_app = r'/media/pi/SCSETUP/github/Software/Utils/SCSetup_Mac.app'
+
+des_windows_app = r'/media/pi/SCSETUP/WindowsUtils/'
+src_windows_app = r'/media/pi/SCSETUP/github/Software/Utils/WindowsUtils/'
+des_windows_bat = r'/media/pi/SCSETUP/SCSetup_Win.bat'
+src_windows_bat = r'/media/pi/SCSETUP/github/Software/Utils/SCSetup_Win.bat'
+
 
 global copy_done
 global percentage
@@ -171,6 +177,9 @@ try:
     #ps = subprocess.Popen(['sudo', 'mv', '/media/pi/SCSETUP/Setup/Version.py', '/home/pi/stockcube/'], stdout=subprocess.PIPE)
     ps = subprocess.Popen(['sudo', 'chmod', 'a+r', '/home/pi/stockcube/Version.py'], stdout=subprocess.PIPE)
 
+    if os.path.isfile("/media/pi/SCSETUP/GHVersion.py"):
+        os.remove("/media/pi/SCSETUP/GHVersion.py")
+
     time.sleep(1)
     draw.rectangle((4, 84, 59, 90), fill=(0,0,0), outline=(0,0,0))
     draw.text((4,83), "Complete", (0,255,0),font=font)
@@ -196,30 +205,56 @@ draw.line((4, 105, 59, 105), fill=(255,255,255))
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
 
-if os.path.exists(src_os_app):
+if os.path.exists(src_mac_app):
 
-    print("Removing existing setup app")
-    if os.path.exists(des_os_app):
-        shutil.rmtree(des_os_app)
+    print("Removing existing MAC setup app")
+    if os.path.exists(des_mac_app):
+        shutil.rmtree(des_mac_app)
     print("Removed - starting copy of new one")
 
     copy_done = 0
     percentage = 0
 
-    t=threading.Thread(name='copying', target=copying_file, args=(src_os_app, des_os_app))
+    t=threading.Thread(name='copying', target=copying_file, args=(src_mac_app, des_mac_app))
     t.start()
-    while not os.path.exists(des_os_app):
+    while not os.path.exists(des_mac_app):
         print "doesn't exist"
         time.sleep(0.5)
 
-    while sum([len(files) for r,d,files in os.walk(src_os_app)]) != sum([len(files) for r,d,files in os.walk(des_os_app)]):
-        for x in range(54):
+    while sum([len(files) for r,d,files in os.walk(src_mac_app)]) != sum([len(files) for r,d,files in os.walk(des_mac_app)]):
+        for x in range(27):
             draw.line((5+x, 100, 5+x, 104), fill=(0,255,0))
             if x > 1:
                 draw.line((5+x-1, 100, 5+x-1, 104), fill=(0,200,0))
                 if x > 2:
                     draw.line((5+x-2, 100, 5+x-2, 104), fill=(0,150,0))
-            time.sleep(0.5)
+            time.sleep(1)
+            matrix.SetImage(image.convert('RGB'))
+
+if os.path.exists(src_windows_app):
+
+    print("Removing existing Windows setup app")
+    if os.path.exists(des_windows_app):
+        shutil.rmtree(des_windows_app)
+    print("Removed - starting copy of new one")
+
+    copy_done = 0
+    percentage = 0
+
+    t=threading.Thread(name='copying', target=copying_file, args=(src_windows_app, des_windows_app))
+    t.start()
+    while not os.path.exists(des_windows_app):
+        print "doesn't exist"
+        time.sleep(0.5)
+
+    while sum([len(files) for r,d,files in os.walk(src_windows_app)]) != sum([len(files) for r,d,files in os.walk(des_windows_app)]):
+        for x in range(27):
+            draw.line((5+x+27, 100, 5+x+27, 104), fill=(0,255,0))
+            if x > 1:
+                draw.line((5+x-1+27, 100, 5+x-1+27, 104), fill=(0,200,0))
+                if x > 2:
+                    draw.line((5+x-2+27, 100, 5+x-2+27, 104), fill=(0,150,0))
+            time.sleep(1)
             matrix.SetImage(image.convert('RGB'))
 
 else:
@@ -231,6 +266,12 @@ else:
                 draw.line((5+x-2, 100, 5+x-2, 104), fill=(0,150,0))
         time.sleep(0.2)
         matrix.SetImage(image.convert('RGB'))
+
+if os.path.exists(src_windows_bat):
+    if os.path.isfile(des_windows_bat):
+        os.remove(des_windows_bat)
+    shutil.copy(src_windows_bat, des_windows_bat)
+
 
 #Now copy new version file to Setup folder of USB stick
 shutil.copy("/home/pi/stockcube/Version.py", "/media/pi/SCSETUP/Setup/")
