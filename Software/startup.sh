@@ -26,6 +26,7 @@ read mode1 < $GPIO_PATH/gpio2/value
 read mode2 < $GPIO_PATH/gpio3/value
 
 await_setup=1 #default to showing welcome screen
+check_network=1
 
 readyfile=$SW_PATH/ready.txt
 
@@ -73,7 +74,7 @@ do
         exit 99 #Exit with status 99 - which means factory reset requested
       fi #No new stockcube software on USB stick - run Cube setup
 
-      if [ -e $SETUP_DISK/Software/ ] #This should only exist if USB tool has downloaded new version
+      if [ -e $SETUP_DISK/github/Software/ ] #This should only exist if USB tool has downloaded new version
       then
 	source $SETUP_DISK/Setup/Version.py
         disk_version=$Version
@@ -143,8 +144,27 @@ do
   #Mode 1 requested:
   if [ $mode1 -eq 1 ]
   then
-    #Should do this once only, when we first wait for/get network connection and correct time through NTP...
-    sudo -H -u pi python $SW_PATH/get_local_timezone.py
+    if [ $check_network -eq 1 ]
+    then
+      $SW_PATH/check_network_time.sh #Returns 0 if all OK, 1 if no time sync, 2 if no network...
+      result=$?
+      if [ $result -eq 0 ]
+      then
+        sudo -H -u pi python $SW_PATH/get_local_timezone.py
+        sudo -H -u pi python $SW_PATH/check_api.py
+        check_network=0
+      else
+        if [ $result -eq 2 ] #No internet connection
+        then
+          #Can't get correct time - tell user will run in offline mode, and set NYSE status to Closed
+          echo "Closed" > /home/pi/nyse_status.txt
+          sudo -H -u pi python /home/pi/stockcube/networkerror.py
+        else #Network OK, time not updated
+          echo "Closed" > /home/pi/nyse_status.txt
+          sudo -H -u pi python /home/pi/stockcube/timeerror.py
+        fi
+      fi
+    fi
     source $SETUP_PATH/mode1.py
     cp /home/pi/stocks_demo1.txt /home/pi/stocks_demo.txt
     $SW_PATH/SC_mode1 --led-rgb-sequence="$ColourMap" -b $modeBrightness &
@@ -166,9 +186,20 @@ do
   #Mode 2 requested:
   if [ $mode2 -eq 1 ]
   then
-    #Should do this once only, when we first wait for/get network connection and correct time through NTP...
-    sudo -H -u pi python $SW_PATH/get_local_timezone.py
-    source $SETUP_PATH/mode2.txt
+    if [ $check_network -eq 1 ]
+    then
+      $SW_PATH/check_network_time.sh #Returns 0 if all OK, 1 if no time sync, 2 if no network...
+      result=$?
+      if [ $result -eq 0 ]
+      then
+        sudo -H -u pi python $SW_PATH/get_local_timezone.py
+        check_network=0
+      else
+        #Can't get correct time - tell user will be running in demo mode? Pass new variable to tools to indicate not live prices?
+        sudo -H -u pi python /home/pi/stockcube/timeerror.py
+      fi
+    fi
+    source $SETUP_PATH/mode2.py
     cp /home/pi/stocks_demo2.txt /home/pi/stocks_demo.txt
     $SW_PATH/SC_mode2 --led-rgb-sequence="$ColourMap" -b $modeBrightness &
     process=$!

@@ -229,12 +229,6 @@ time.sleep(2)
 
 draw.text((2,12), "API Key", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
-#Don't actually need to do this here:
-#try:
-#    with open("Setup/fhapi.txt", "r") as apifile:
-#        for line in apifile:
-#            currentline = line.split(";")
-#            FHAPI=str(currentline[0])
 
 time.sleep(2)
 
@@ -258,9 +252,11 @@ matrix.SetImage(image.convert('RGB'))
 
 time.sleep(2)
 
-#try:
-x=1
-if x == 1:
+#Remove existing check_prices file (called every minute by crontab)
+if os.path.isfile("/home/pi/check_prices.py"):
+    os.remove("/home/pi/check_prices.py")
+
+try:
     sys.path.append("/home/pi/Setup")
     import mode1
     modefile="/home/pi/stockcube/mode" + str(mode1.modeFront) + str(mode1.modeTop)
@@ -270,9 +266,9 @@ if x == 1:
 
     draw.text((50,36), "OK", (0,255,0),font=font)
     matrix.SetImage(image.convert('RGB'))
-#except:
-#    draw.text((50,36), "E1", (255,0,0),font=font)
-#    matrix.SetImage(image.convert('RGB'))
+except:
+    draw.text((50,36), "E1", (255,0,0),font=font)
+    matrix.SetImage(image.convert('RGB'))
 
 time.sleep(1)
 
@@ -294,6 +290,21 @@ try:
 except:
     draw.text((50,48), "E1", (255,0,0),font=font)
     matrix.SetImage(image.convert('RGB'))
+
+#Now write the check_prices.py file dependent on modes
+file = open("/home/pi/check_prices.sh", "w")
+file.write("#/bin/bash\n")
+if mode1.modeFront == 0 or mode2.modeFront == 0: #Watchlist mode
+    file.write("python /home/pi/stockcube/check_watchlist.py\n")
+if mode1.modeFront == 1 or mode2.modeFront == 1 or mode1.modeTop == 1 or mode2.modeTop == 1: #Portfolio mode
+    file.write("python /home/pi/stockcube/check_portfolio.py\n")
+if mode1.modeTop == 0 or mode2.modeTop == 0: #ETF mode
+    file.write("python /home/pi/stockcube/check_etfs.py\n")
+if mode1.modeTop == 2 or mode2.modeTop == 2: #Exchange mode
+    file.write("python /home/pi/stockcube/check_exchanges.py\n")
+file.write("/home/pi/stockcube/nyse_status\n")
+file.close()
+ps = subprocess.Popen(['sudo', 'chmod', '-R', 'a+x', '/home/pi/check_prices.sh'], stdout=subprocess.PIPE)
 
 time.sleep(2)
 

@@ -20,7 +20,7 @@ class StockTicker(object):
 num_tickers = 0
 list = []
 
-with open("/home/pi/tickers.txt") as f:	#Open ticker file for reading
+with open("/home/pi/Setup/tickers.txt") as f:	#Open ticker file for reading
 	for line in f: #iterate over each line
 		type, ticker = line.split()
 		list.append( StockTicker(type, ticker, 0, 0, 0))
@@ -53,7 +53,7 @@ for x in range(num_tickers):
 		list[x].current_price = quote_today['c'][-1]
 		list[x].daily_change = (list[x].current_price - close_yest)
 		list[x].daily_change_pc = ((list[x].daily_change) / close_yest) * 100
-	print >> f, list[x].ticker + " " + str(list[x].current_price) + " " + str(list[x].daily_change) + " " + str("{:.2f}".format(list[x].daily_change_pc)) + "\n"
+	print >> f, list[x].type + " " + list[x].ticker + " " + str(list[x].current_price) + " " + str(list[x].daily_change) + " " + str("{:.2f}".format(list[x].daily_change_pc)) + "\n"
 
 os.rename("/home/pi/ticker_prices1.txt", "/home/pi/ticker_prices.txt")
 

@@ -36,14 +36,18 @@ unix_today=today.strftime("%s")
 unix_timenow=int(time.time())
 unix_time_prev_midnight=int(unix_today)
 
-c = CurrencyRates()
 for x in range(num_tickers):
 	ticker_to_check = list[x].ticker
 	if list[x].type == "Forex":
 		#quote=#Use YF in here somehow!!
-		list[x].current_price = quote['c']
-		list[x].daily_change = quote['d']
-		list[x].daily_change_pc = quote['dp']
+		c = yf.Ticker(ticker_to_check + "USD=X")
+		quote=c.history(period='1d', interval='1m')
+		quote_now=quote.Open[-1]
+		quote=c.history(period='2d', interval='1d') #This automatically only gives data for live trading days
+		quote_yest=quote.Close[-2]
+		list[x].current_price = quote_now
+		list[x].daily_change = quote_now-quote_yest
+		list[x].daily_change_pc = ((quote_now-quote_yest)/quote_yest) * 100
 	else:	#Crypto
 		crypto_string="BINANCE:" + str(ticker_to_check) + "USDT"
 		quote_today=finnhub_client.crypto_candles(crypto_string, '1', unix_timenow-70, unix_timenow-10)
@@ -52,9 +56,9 @@ for x in range(num_tickers):
 		list[x].current_price = quote_today['c'][-1]
 		list[x].daily_change = (list[x].current_price - close_yest)
 		list[x].daily_change_pc = ((list[x].daily_change) / close_yest) * 100
-	print >> f, list[x].ticker + " " + str(list[x].current_price) + " " + str(list[x].daily_change) + " " + str("{:.2f}".format(list[x].daily_change_pc)) + "\n"
+	print >> f, list[x].ticker + " " + str(list[x].current_price) + " " + str("{:.2f}".format(list[x].daily_change_pc)) + "\n"
 
-os.rename("/home/pi/ticker_prices1.txt", "/home/pi/ticker_prices.txt")
+os.rename("/home/pi/exchange_prices1.txt", "/home/pi/exchange_prices.txt")
 
 #print "Done"
 
