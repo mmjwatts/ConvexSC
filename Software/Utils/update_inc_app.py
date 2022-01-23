@@ -192,6 +192,87 @@ except Exception as e:
     matrix.SetImage(image.convert('RGB'))
     time.sleep(1)
 
+draw.text((0,33), "Setup tool:", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.5)
+
+draw.line((4, 99, 4, 105), fill=(255,255,255))
+draw.line((59, 99, 59, 105), fill=(255,255,255))
+draw.line((4, 99, 59, 99), fill=(255,255,255))
+
+draw.line((4, 105, 59, 105), fill=(255,255,255))
+
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.5)
+
+if os.path.exists(src_mac_app):
+
+    print("Removing existing MAC setup app")
+    if os.path.exists(des_mac_app):
+        shutil.rmtree(des_mac_app)
+    print("Removed - starting copy of new one")
+
+    copy_done = 0
+    percentage = 0
+
+    t=threading.Thread(name='copying', target=copying_file, args=(src_mac_app, des_mac_app))
+    t.start()
+    while not os.path.exists(des_mac_app):
+        print "doesn't exist"
+        time.sleep(0.5)
+
+    while sum([len(files) for r,d,files in os.walk(src_mac_app)]) != sum([len(files) for r,d,files in os.walk(des_mac_app)]):
+        for x in range(27):
+            draw.line((5+x, 100, 5+x, 104), fill=(0,255,0))
+            if x > 1:
+                draw.line((5+x-1, 100, 5+x-1, 104), fill=(0,200,0))
+                if x > 2:
+                    draw.line((5+x-2, 100, 5+x-2, 104), fill=(0,150,0))
+            time.sleep(1)
+            matrix.SetImage(image.convert('RGB'))
+
+if os.path.exists(src_windows_app):
+
+    print("Removing existing Windows setup app")
+    if os.path.exists(des_windows_app):
+        shutil.rmtree(des_windows_app)
+    print("Removed - starting copy of new one")
+
+    copy_done = 0
+    percentage = 0
+
+    t=threading.Thread(name='copying', target=copying_file, args=(src_windows_app, des_windows_app))
+    t.start()
+    while not os.path.exists(des_windows_app):
+        print "doesn't exist"
+        time.sleep(0.5)
+
+    while sum([len(files) for r,d,files in os.walk(src_windows_app)]) != sum([len(files) for r,d,files in os.walk(des_windows_app)]):
+        for x in range(27):
+            draw.line((5+x+27, 100, 5+x+27, 104), fill=(0,255,0))
+            if x > 1:
+                draw.line((5+x-1+27, 100, 5+x-1+27, 104), fill=(0,200,0))
+                if x > 2:
+                    draw.line((5+x-2+27, 100, 5+x-2+27, 104), fill=(0,150,0))
+            time.sleep(1)
+            matrix.SetImage(image.convert('RGB'))
+
+else:
+    for x in range(54):
+        draw.line((5+x, 100, 5+x, 104), fill=(0,255,0))
+        if x > 1:
+            draw.line((5+x-1, 100, 5+x-1, 104), fill=(0,200,0))
+            if x > 2:
+                draw.line((5+x-2, 100, 5+x-2, 104), fill=(0,150,0))
+        time.sleep(0.2)
+        matrix.SetImage(image.convert('RGB'))
+
+if os.path.isfile(src_windows_bat):
+    if os.path.isfile(des_windows_bat):
+        os.remove(des_windows_bat)
+    shutil.copy(src_windows_bat, des_windows_bat)
+
+
 #Now copy new version file to Setup folder of USB stick
 shutil.copy("/home/pi/stockcube/Version.py", "/media/pi/SCSETUP/Setup/")
 

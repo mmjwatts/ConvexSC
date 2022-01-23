@@ -57,21 +57,18 @@ time.sleep(2)
 #font=ImageFont.load("/home/pi/fonts/7x13B.pil")
 font=ImageFont.load("/home/pi/fonts/6x9_MWa.pil")
 
-draw.text((0,65), "No live", (255,255,255),font=font)
+draw.text((0,65), "System time", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-draw.text((0,75), "network", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.1)
-
-draw.text((0,85), "connection", (255,255,255),font=font)
+draw.text((0,75), "not synced", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
 time.sleep(1)
-draw.text((0,100), "Running", (255,255,255),font=font)
-draw.text((0,110), "offline mode", (255,255,255),font=font)
+draw.text((0,90), "Running", (255,255,255),font=font)
+draw.text((0,100), "offline", (255,255,255),font=font)
+draw.text((0,110), "for now", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 
 #font=ImageFont.load("/home/pi/fonts/5x7.pil")
