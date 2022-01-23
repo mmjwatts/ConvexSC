@@ -62,6 +62,7 @@ do
       #Only copy software files over if current version < USB version
       source $SW_PATH/Version.py
       curr_version=$Version
+      curr_app_version=$AppVersion
       echo "Current version = $curr_version"
 
       if [ -e $SETUP_DISK/FACTORY_RESET/ ]
@@ -78,9 +79,15 @@ do
       then
 	source $SETUP_DISK/Setup/Version.py
         disk_version=$Version
+        disk_app_version=$AppVersion
         if (( $(echo "$disk_version > $curr_version" |bc -l) )); then
           echo "Software update available - copying update script into place and exiting startup"
-          cp $SETUP_DISK/github/Software/Utils/update.py /home/pi/
+          if (( $(echo "$disk_app_version > $curr_app_version" |bl -l) )); then
+            echo "Also updating USB apps"
+            cp $SETUP_DISK/github/Software/Utils/update_inc_app.py /home/pi/update.py
+          else
+            cp $SETUP_DISK/github/Software/Utils/update.py /home/pi/
+          fi
           chmod a+x /home/pi/update.py
           logfile=update_log_$(date +'%Y%m%d_%H%M')
   	  mkdir -p $SETUP_DISK/logs/
