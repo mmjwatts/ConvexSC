@@ -2,6 +2,8 @@
 GPIO_PATH=/sys/class/gpio
 TEST_PATH=/home/pi/stockcube/test/
 
+source /config/cube.txt
+
 #echo "2" > $GPIO_PATH/export #SCL
 #echo "3" > $GPIO_PATH/export #SDA
 
@@ -25,7 +27,7 @@ do
 
   if [ $mode1 -eq 1 ]
   then
-    $TEST_PATH/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence="BGR" --led-pixel-mapper="Rotate:90" --led-brightness=$brightness $TEST_PATH/Test2.bmp &
+    $TEST_PATH/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence=$ColourMap --led-pixel-mapper="Rotate:90" --led-brightness=$brightness $TEST_PATH/Test2.bmp &
     process=$!
 
     read mode1 < $GPIO_PATH/gpio2/value  
@@ -41,7 +43,7 @@ do
     sudo kill -15 $process
   elif [ $mode2 -eq 1 ]
   then
-    $TEST_PATH/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence="BGR" --led-pixel-mapper="Rotate:90" --led-brightness=$brightness $TEST_PATH/TestDone.bmp &
+    $TEST_PATH/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence=$ColourMap --led-pixel-mapper="Rotate:90" --led-brightness=$brightness $TEST_PATH/TestDone.bmp &
     process=$!
 
     read mode2 < $GPIO_PATH/gpio3/value  
@@ -56,7 +58,7 @@ do
 
     sudo kill -15 $process
   else
-    $TEST_PATH/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence="BGR" --led-pixel-mapper="Rotate:90" --led-brightness=$brightness $TEST_PATH/Test0.bmp &
+    $TEST_PATH/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence=$ColourMap --led-pixel-mapper="Rotate:90" --led-brightness=$brightness $TEST_PATH/Test0.bmp &
     process=$!
 
     read mode1 < $GPIO_PATH/gpio2/value

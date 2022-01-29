@@ -207,6 +207,8 @@ try:
             try:
                 output = subprocess.check_output(('grep', 'wlan0'), stdin=ps.stdout)
                 print("Connected to wifi!")
+                draw.text((50,0), "OK", (0,255,0),font=font)
+                matrix.SetImage(image.convert('RGB'))
             except subprocess.CalledProcessError:
                 draw.text((32,0), "Try 3", (0,0,255),font=font)
                 matrix.SetImage(image.convert('RGB'))
@@ -216,6 +218,8 @@ try:
                 try:
                     output = subprocess.check_output(('grep', 'wlan0'), stdin=ps.stdout)
                     print("Connected to wifi!")
+                    draw.text((50,0), "OK", (0,255,0),font=font)
+                    matrix.SetImage(image.convert('RGB'))
                 except subprocess.CalledProcessError:
                     draw.text((44,0), "N/C", (255,125,0),font=font)
                     matrix.SetImage(image.convert('RGB'))
