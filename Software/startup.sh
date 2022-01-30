@@ -144,6 +144,7 @@ do
       done
       echo "Killing process $process"
       sudo kill -15 $process
+      sudo pkill -u daemon
       sleep 2
     fi
   fi
@@ -187,6 +188,7 @@ do
     read mode2 < $GPIO_PATH/gpio3/value
 
     kill $process
+    sudo pkill -u daemon
   fi
 
   #Mode 2 requested:
@@ -220,6 +222,7 @@ do
     read mode2 < $GPIO_PATH/gpio3/value
 
     kill $process
+    sudo pkill -u daemon
   fi
 
   #sleep 1

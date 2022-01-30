@@ -41,6 +41,7 @@ do
     read mode2 < $GPIO_PATH/gpio3/value
 
     sudo kill -15 $process
+    sudo pkill -u daemon
   elif [ $mode2 -eq 1 ]
   then
     $TEST_PATH/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence=$ColourMap --led-pixel-mapper="Rotate:90" --led-brightness=$brightness $TEST_PATH/TestDone.bmp &
@@ -57,6 +58,7 @@ do
     read mode2 < $GPIO_PATH/gpio3/value
 
     sudo kill -15 $process
+    sudo pkill -u daemon
   else
     $TEST_PATH/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence=$ColourMap --led-pixel-mapper="Rotate:90" --led-brightness=$brightness $TEST_PATH/Test0.bmp &
     process=$!
@@ -76,7 +78,7 @@ do
     read mode2 < $GPIO_PATH/gpio3/value
 
     sudo kill -15 $process
-
+    sudo pkill -u daemon
   fi
 done
 
