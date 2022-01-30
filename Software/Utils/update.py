@@ -195,11 +195,6 @@ except Exception as e:
 #Now copy new version file to Setup folder of USB stick
 shutil.copy("/home/pi/stockcube/Version.py", "/media/pi/SCSETUP/Setup/")
 
-draw.rectangle((5, 100, 58, 104), fill=(0,255,0), outline=(0,255,0))
-time.sleep(1)
-draw.rectangle((4, 99, 59, 105), fill=(0,0,0), outline=(0,0,0))
-draw.text((4,98), "Complete", (0,255,0),font=font)
-matrix.SetImage(image.convert('RGB'))
 time.sleep(1)
 
 shutil.rmtree("/media/pi/SCSETUP/github/")
