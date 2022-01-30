@@ -58,6 +58,7 @@ do
       #Copy cube logs onto setup disk
       mkdir -p $SETUP_DISK/logs/cubeLogs/
       cp -r $SW_PATH/logs/* $SETUP_DISK/logs/cubelogs/
+      cp -r /home/pi/recovery/logs/* $SETUP_DISK/logs/cubelogs/
       #Copy all files from USB stick to relevant directories
       #Only copy software files over if current version < USB version
       source $SW_PATH/Version.py
@@ -69,9 +70,9 @@ do
       then
         echo "Factory reset requested"
         logfile=reset_log_$(date +'%Y%m%d_%H%M')
-        mkdir -p $SETUP_DISK/logs/
-        echo "Starting factory reset from v$curr_version" > $SETUP_DISK/logs/$logfile.txt
-        sudo -H -u pi /home/pi/recovery/factory_reset.sh >> $SETUP_DISK/logs/$logfile.txt 2>&1 &
+        sudo -H -u pi mkdir -p /home/pi/recovery/logs/
+        sudo -H -u pi echo "Starting factory reset from v$curr_version" > /home/pi/recovery/logs/$logfile.txt
+        sudo -H -u pi /home/pi/recovery/factory_reset.sh >> /home/pi/recovery/logs/$logfile.txt 2>&1 &
         exit 99 #Exit with status 99 - which means factory reset requested
       fi #No new stockcube software on USB stick - run Cube setup
 
