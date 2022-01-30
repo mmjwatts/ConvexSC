@@ -81,9 +81,9 @@ do
 	source $SETUP_DISK/Setup/Version.py
         disk_version=$Version
         disk_app_version=$AppVersion
-        if (( $(echo "$disk_version > $curr_version" |bc -l) )); then
+        if awk "BEGIN {exit !($disk_version > $curr_version)}"; then
           echo "Software update available - copying update script into place and exiting startup"
-          if (( $(echo "$disk_app_version > $curr_app_version" |bl -l) )); then
+          if awk "BEGIN {exit !($disk_app_version > $curr_app_version)}"; then
             echo "Also updating USB apps"
             cp $SETUP_DISK/github/Software/Utils/update_inc_app.py /home/pi/update.py
           else
