@@ -1,5 +1,4 @@
 #!/bin/bash
-#1.01 test
 
 trap 'kill $process; exit' INT
 
