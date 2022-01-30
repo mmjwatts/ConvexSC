@@ -50,7 +50,7 @@ do
   read mode2 < $GPIO_PATH/gpio3/value
 
   #Switch mode 0, or no current setup file exists (eg when shipped):
-  if ([ $mode1 -eq 0 ] && [ $mode2 -eq 0 ]) || [ $await_setup -eq 1 ]
+  if (([ $mode1 -eq 0 ] && [ $mode2 -eq 0 ]) || [ $await_setup -eq 1 ])
   then
     if [ -e $SETUP_DISK ]
     then
@@ -150,7 +150,7 @@ do
   fi
 
   #Mode 1 requested:
-  if [ $mode1 -eq 1 ]
+  if [ $mode1 -eq 1 ] && [ $await_setup -eq 0 ]
   then
     if [ $check_network -eq 1 ]
     then
@@ -192,7 +192,7 @@ do
   fi
 
   #Mode 2 requested:
-  if [ $mode2 -eq 1 ]
+  if [ $mode2 -eq 1 ] && [ $await_setup -eq 0 ]
   then
     if [ $check_network -eq 1 ]
     then
