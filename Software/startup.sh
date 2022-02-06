@@ -103,10 +103,15 @@ do
       echo "Running Cube setup"
       mkdir -p $SETUP_PATH
       cp $SETUP_DISK/Setup/* $SETUP_PATH
+      mkdir -p $SETUP_PATH/logs/cubeLogs/
+      cp -r $SW_PATH/logs/* $SETUP_DISK/logs/cubelogs/
+      sleep 2
+      umount -f $SETUP_DISK
       logfile=setup_log_$(date +'%Y%m%d_%H%M')
-      mkdir -p $SETUP_DISK/logs/
-      echo "Setting up Stock Cube version $curr_version" > $SETUP_DISK/logs/$logfile.txt
-      sudo -H -u pi $SW_PATH/setup.py >> $SETUP_DISK/logs/$logfile.txt 2>&1
+      echo "Setting up Stock Cube version $curr_version" > $SW_PATH/logs/$logfile.txt
+      sudo -H -u pi $SW_PATH/setup.py >> $SW_PATH/logs/$logfile.txt 2>&1
+      #force a /home/pi/check_prices.sh to ensure there are all files required for running modes before we switch!
+      sudo -H -u pi /home/pi/check_prices.sh
       echo 1 > $SW_PATH/ready.txt	#This is how Stock Cube knows there is a valid setup installed
       await_setup=0
 

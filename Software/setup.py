@@ -320,7 +320,7 @@ matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
 
 #Unmount USB stick safely
-ps = subprocess.Popen(['sudo', 'umount', '-f', '/media/pi/SCSETUP'], stdout=subprocess.PIPE)
+#ps = subprocess.Popen(['sudo', 'umount', '-f', '/media/pi/SCSETUP'], stdout=subprocess.PIPE)
 
 font=ImageFont.load("/home/pi/fonts/6x10.pil")
 draw.text((15,66), "Setup", (255,255,255),font=font)
