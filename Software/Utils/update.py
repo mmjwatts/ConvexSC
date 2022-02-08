@@ -10,12 +10,12 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageFont, ImageDraw
 
 des_mac_app = r'/media/pi/SCSETUP/SCSetup_Mac.app'
-src_mac_app = r'/media/pi/SCSETUP/github/Software/Utils/SCSetup_Mac.app'
+src_mac_app = r'/media/pi/SCSETUP/Setup/github/Software/Utils/SCSetup_Mac.app'
 
 des_windows_app = r'/media/pi/SCSETUP/WindowsUtils/'
-src_windows_app = r'/media/pi/SCSETUP/github/Software/Utils/WindowsUtils/'
+src_windows_app = r'/media/pi/SCSETUP/Setup/github/Software/Utils/WindowsUtils/'
 des_windows_bat = r'/media/pi/SCSETUP/SCSetup_Win.bat'
-src_windows_bat = r'/media/pi/SCSETUP/github/Software/Utils/SCSetup_Win.bat'
+src_windows_bat = r'/media/pi/SCSETUP/Setup/github/Software/Utils/SCSetup_Win.bat'
 
 
 global copy_done
@@ -162,7 +162,7 @@ for x in range(54):
     time.sleep(0.05)
     matrix.SetImage(image.convert('RGB'))
 try:
-    src_folder="/media/pi/SCSETUP/github/Software/"
+    src_folder="/media/pi/SCSETUP/Setup/github/Software/"
     dest_folder="/home/pi/stockcube/"
     for f in os.listdir(src_folder):
         if os.path.isfile(f):
@@ -172,13 +172,13 @@ try:
     ps = subprocess.Popen(['sudo', 'chmod', '-R', 'a+rwx', '/home/pi/stockcube/'], stdout=subprocess.PIPE)
     if os.path.isfile("/home/pi/stockcube/Version.py"):
         os.remove("/home/pi/stockcube/Version.py")
-    shutil.copy("/media/pi/SCSETUP/github/Software/Version.py", "/home/pi/stockcube/")
+    shutil.copy("/media/pi/SCSETUP/Setup/github/Software/Version.py", "/home/pi/stockcube/")
     time.sleep(1)
     #ps = subprocess.Popen(['sudo', 'mv', '/media/pi/SCSETUP/Setup/Version.py', '/home/pi/stockcube/'], stdout=subprocess.PIPE)
     ps = subprocess.Popen(['sudo', 'chmod', 'a+r', '/home/pi/stockcube/Version.py'], stdout=subprocess.PIPE)
 
-    if os.path.isfile("/media/pi/SCSETUP/GHVersion.py"):
-        os.remove("/media/pi/SCSETUP/GHVersion.py")
+    if os.path.isfile("/media/pi/SCSETUP/Setup/GHVersion.py"):
+        os.remove("/media/pi/SCSETUP/Setup/GHVersion.py")
 
     time.sleep(1)
     draw.rectangle((4, 84, 59, 90), fill=(0,0,0), outline=(0,0,0))
@@ -195,9 +195,14 @@ except Exception as e:
 #Now copy new version file to Setup folder of USB stick
 shutil.copy("/home/pi/stockcube/Version.py", "/media/pi/SCSETUP/Setup/")
 
+draw.rectangle((5, 100, 58, 104), fill=(0,255,0), outline=(0,255,0))
+time.sleep(1)
+draw.rectangle((4, 99, 59, 105), fill=(0,0,0), outline=(0,0,0))
+draw.text((4,98), "Complete", (0,255,0),font=font)
+matrix.SetImage(image.convert('RGB'))
 time.sleep(1)
 
-shutil.rmtree("/media/pi/SCSETUP/github/")
+shutil.rmtree("/media/pi/SCSETUP/Setup/github/")
 
 font=ImageFont.load("/home/pi/fonts/7x13B.pil")
 draw.text((20,50), "Update", (0,255,0),font=font)

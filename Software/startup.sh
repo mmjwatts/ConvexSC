@@ -76,24 +76,25 @@ do
         exit 99 #Exit with status 99 - which means factory reset requested
       fi #No new stockcube software on USB stick - run Cube setup
 
-      if [ -e $SETUP_DISK/github/Software/ ] #This should only exist if USB tool has downloaded new version
+      if [ -e $SETUP_DISK/Setup/github/Software/ ] #This should only exist if USB tool has downloaded new version
       then
-	source $SETUP_DISK/Setup/Version.py
+	source $SETUP_DISK/Setup/github/Software/Version.py
         disk_version=$Version
         disk_app_version=$AppVersion
+	mkdir -p $SETUP_PATH/logs/cubeLogs/
+        cp -r $SW_PATH/logs/* $SETUP_DISK/logs/cubelogs/
         if awk "BEGIN {exit !($disk_version > $curr_version)}"; then
           echo "Software update available - copying update script into place and exiting startup"
           if awk "BEGIN {exit !($disk_app_version > $curr_app_version)}"; then
             echo "Also updating USB apps"
-            cp $SETUP_DISK/github/Software/Utils/update_inc_app.py /home/pi/update.py
+            cp $SETUP_DISK/Setup/github/Software/Utils/update_inc_app.py /home/pi/update.py
           else
-            cp $SETUP_DISK/github/Software/Utils/update.py /home/pi/
+            cp $SETUP_DISK/Setup/github/Software/Utils/update.py /home/pi/
           fi
           chmod a+x /home/pi/update.py
           logfile=update_log_$(date +'%Y%m%d_%H%M')
-  	  mkdir -p $SETUP_DISK/logs/
-          echo "Attempting Stock Cube update from $curr_version to $disk_version" > $SETUP_DISK/logs/$logfile.txt
-          sudo -H -u pi /home/pi/update.py >> $SETUP_DISK/logs/$logfile.txt 2>&1 &
+          echo "Attempting Stock Cube update from $curr_version to $disk_version" > $SW_PATH/logs/$logfile.txt
+          sudo -H -u pi /home/pi/update.py >> $SW_PATH/logs/$logfile.txt 2>&1 &
   	  exit 2 #Exit with status 2 - which means update available
         else
           echo "Same version of software on disk as Cube - ignoring"
