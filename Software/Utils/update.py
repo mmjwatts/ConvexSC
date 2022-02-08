@@ -195,14 +195,26 @@ except Exception as e:
 #Now copy new version file to Setup folder of USB stick
 shutil.copy("/home/pi/stockcube/Version.py", "/media/pi/SCSETUP/Setup/")
 
+draw.text((0,33), "Setup tool:", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.5)
+
 draw.rectangle((5, 100, 58, 104), fill=(0,255,0), outline=(0,255,0))
 time.sleep(1)
-draw.rectangle((4, 99, 59, 105), fill=(0,0,0), outline=(0,0,0))
-draw.text((4,98), "Complete", (0,255,0),font=font)
+draw.text((4,98), "No update", (0,255,0),font=font2)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(1)
 
+draw.text((20,50), "Please", (255,255,255),font=font)
+draw.text((2,114), "wait...", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+
 shutil.rmtree("/media/pi/SCSETUP/Setup/github/")
+
+draw.text((20,50), "Please", (0,0,0),font=font)
+draw.text((2,114), "wait...", (0,0,0),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(1)
 
 font=ImageFont.load("/home/pi/fonts/7x13B.pil")
 draw.text((20,50), "Update", (0,255,0),font=font)
