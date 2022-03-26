@@ -135,7 +135,7 @@ for x in range(54):
     time.sleep(0.15)
     matrix.SetImage(image.convert('RGB'))
 try:
-    dest_folder="/home/pi/stockcube_test/"
+    dest_folder="/home/pi/stockcube/"
     if os.path.isdir(dest_folder):
        shutil.rmtree(dest_folder)
 #    for f in os.listdir(src_folder):
