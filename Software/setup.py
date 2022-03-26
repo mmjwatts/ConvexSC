@@ -23,6 +23,7 @@ image = Image.open(image_file)
 
 draw=ImageDraw.Draw(image)
 
+
 font=ImageFont.load("/home/pi/fonts/10x20.pil")
 
 draw.text((18,130), "The", (255,255,255),font=font)
@@ -49,95 +50,110 @@ matrix = RGBMatrix(options = options)
 
 matrix.SetImage(image.convert('RGB'))
 
-time.sleep(2)
+time.sleep(1)
 
 #draw.text((0,65), "Loading", (255,255,255),font=font)
 #matrix.SetImage(image.convert('RGB'))
+
+try:
+  sys.path.append("/home/pi/stockcube/")
+  import Version
+  font=ImageFont.load("/home/pi/fonts/5x7.pil")
+  draw.text((0,122), "v"+str(Version.Version), (255,255,255),font=font)
+  matrix.SetImage(image.convert('RGB'))
+except:
+  matrix.SetImage(image.convert('RGB'))
+
+time.sleep(1)
+
 font=ImageFont.load("/home/pi/fonts/9x18B.pil")
 
-draw.text((0,65), "L", (255,255,255),font=font)
+y_coord = 65
+draw.text((0,y_coord), "L", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((0,65), "Lo", (255,255,255),font=font)
+draw.text((0,y_coord), "Lo", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((0,65), "Loa", (255,255,255),font=font)
+draw.text((0,y_coord), "Loa", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((0,65), "Load", (255,255,255),font=font)
+draw.text((0,y_coord), "Load", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((0,65), "Loadi", (255,255,255),font=font)
+draw.text((0,y_coord), "Loadi", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((0,65), "Loadin", (255,255,255),font=font)
+draw.text((0,y_coord), "Loadin", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((0,65), "Loading", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.1)
-
-draw.text((13,80), "y", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.1)
-draw.text((13,80), "yo", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.1)
-draw.text((13,80), "you", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.1)
-draw.text((13,80), "your", (255,255,255),font=font)
+draw.text((0,y_coord), "Loading", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-draw.text((9,95), "s", (255,255,255),font=font)
+y_coord=y_coord+15
+draw.text((13,y_coord), "y", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((9,95), "se", (255,255,255),font=font)
+draw.text((13,y_coord), "yo", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((9,95), "set", (255,255,255),font=font)
+draw.text((13,y_coord), "you", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
-draw.text((9,95), "setu", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.1)
-draw.text((9,95), "setup", (255,255,255),font=font)
+draw.text((13,y_coord), "your", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
+y_coord = y_coord+15
+draw.text((9,y_coord), "s", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.1)
+draw.text((9,y_coord), "se", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.1)
+draw.text((9,y_coord), "set", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.1)
+draw.text((9,y_coord), "setu", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.1)
+draw.text((9,y_coord), "setup", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.1)
+
+y_coord=y_coord+10
+time.sleep(0.5)
+draw.text((18,y_coord), ".", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.5)
+draw.text((28,y_coord), ".", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.5)
+draw.text((38,y_coord), ".", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
 
 time.sleep(0.5)
-draw.text((18,110), ".", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.5)
-draw.text((28,110), ".", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.5)
-draw.text((38,110), ".", (255,255,255),font=font)
+draw.text((18,y_coord), ".", (0,0,0),font=font)
+draw.text((28,y_coord), ".", (0,0,0),font=font)
+draw.text((38,y_coord), ".", (0,0,0),font=font)
 matrix.SetImage(image.convert('RGB'))
 
 time.sleep(0.5)
-draw.text((18,110), ".", (0,0,0),font=font)
-draw.text((28,110), ".", (0,0,0),font=font)
-draw.text((38,110), ".", (0,0,0),font=font)
-matrix.SetImage(image.convert('RGB'))
-
-time.sleep(0.5)
-draw.text((18,110), ".", (255,255,255),font=font)
+draw.text((18,y_coord), ".", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
-draw.text((28,110), ".", (255,255,255),font=font)
+draw.text((28,y_coord), ".", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
-draw.text((38,110), ".", (255,255,255),font=font)
+draw.text((38,y_coord), ".", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 
 time.sleep(0.5)
 
-draw.text((18,110), ".", (0,0,0),font=font)
-draw.text((28,110), ".", (0,0,0),font=font)
-draw.text((38,110), ".", (0,0,0),font=font)
+draw.text((18,y_coord), ".", (0,0,0),font=font)
+draw.text((28,y_coord), ".", (0,0,0),font=font)
+draw.text((38,y_coord), ".", (0,0,0),font=font)
 matrix.SetImage(image.convert('RGB'))
 
 time.sleep(0.5)
@@ -158,20 +174,28 @@ try:
             currentline = line.split(";")
             wifi_SSID=str(currentline[0])
             wifi_PWD=str(currentline[1])
-
-#    print("Wifi SSID = " + wifi_SSID)
-#    print("Wifi Password = " + wifi_PWD)
+	    try:
+	      wifi_country=str((currentline[2].split(":"))[0])
+	      wifi_key_mgmt=str(currentline[3])
+	      wifi_timezone=str(currentline[4])
+            except: #Allows for case where old format setup file is present (shouldn't happen...!)
+	      wifi_country="US"
+	      wifi_key_mgmt="WPA-PSK"
+	      wifi_timezone="Europe/London"
 
     file = open("/home/pi/stockcube/wpa_supplicant.conf_new", "w")
     file.write("ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n")
     file.write("update_config=1\n")
-    file.write("country=US\n")
+    file.write("country=" + wifi_country + "\n")
     file.write("\n")
     file.write("network={\n")
     file.write("    ssid=\"" + wifi_SSID + "\"\n")
     file.write("    psk=\"" + wifi_PWD + "\"\n")
-    file.write("    key_mgmt=WPA-PSK\n")
+    file.write("    key_mgmt=" + wifi_key_mgmt + "\n")
     file.write("}\n")
+    file.close()
+    file = open("/config/timezone.h", "w")
+    file.write("char local_tz[30] = \"" + wifi_timezone + "\";\n")
     file.close()
     ps = subprocess.Popen(['sudo', 'mv', '/etc/wpa_supplicant/wpa_supplicant.conf', '/etc/wpa_supplicant/wpa_supplicant.conf_old'], stdout=subprocess.PIPE)
     ps = subprocess.Popen(['sudo', 'mv', '/home/pi/stockcube/wpa_supplicant.conf_new', '/etc/wpa_supplicant/wpa_supplicant.conf'], stdout=subprocess.PIPE)
@@ -180,7 +204,6 @@ try:
     ps = subprocess.Popen(['sudo', 'systemctl', 'restart', 'dhcpcd'], stdout=subprocess.PIPE)
 
     time.sleep(4)
-    #ps = subprocess.Popen(['iwconfig'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     try:
         output = subprocess.check_output(('grep', 'wlan0'), stdin=ps.stdout)
@@ -190,7 +213,7 @@ try:
     except subprocess.CalledProcessError:
         draw.text((32,0), "Try 1", (0,0,255),font=font)
         matrix.SetImage(image.convert('RGB'))
-        time.sleep(2)
+        time.sleep(4)
         ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         draw.text((32,0), "Try 1", (0,0,0),font=font) #Clear text ready for next update
         try:
@@ -201,7 +224,7 @@ try:
         except subprocess.CalledProcessError:
             draw.text((32,0), "Try 2", (0,0,255),font=font)
             matrix.SetImage(image.convert('RGB'))
-            time.sleep(2)
+            time.sleep(4)
             ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             draw.text((32,0), "Try 2", (0,0,0),font=font) #Clear text ready for next update
             try:
@@ -212,7 +235,7 @@ try:
             except subprocess.CalledProcessError:
                 draw.text((32,0), "Try 3", (0,0,255),font=font)
                 matrix.SetImage(image.convert('RGB'))
-                time.sleep(2)
+                time.sleep(4)
                 draw.text((32,0), "Try 3", (0,0,0),font=font) #Clear text ready for next update
                 ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 try:
@@ -270,9 +293,11 @@ try:
 
     draw.text((50,36), "OK", (0,255,0),font=font)
     matrix.SetImage(image.convert('RGB'))
+    mode1OK=1
 except:
     draw.text((50,36), "E1", (255,0,0),font=font)
     matrix.SetImage(image.convert('RGB'))
+    mode1OK=0
 
 time.sleep(1)
 
@@ -291,46 +316,69 @@ try:
 
     draw.text((50,48), "OK", (0,255,0),font=font)
     matrix.SetImage(image.convert('RGB'))
+    mode2OK=1
 except:
     draw.text((50,48), "E1", (255,0,0),font=font)
     matrix.SetImage(image.convert('RGB'))
+    mode2OK=0
 
 #Now write the check_prices.py file dependent on modes
 file = open("/home/pi/check_prices.sh", "w")
 file.write("#/bin/bash\n")
-if mode1.modeFront == 0 or mode2.modeFront == 0: #Watchlist mode
+file.write("/home/pi/stockcube/check_network_time.sh 1\n")
+file.write("nw_status=$?\n")
+file.write("echo $nw_status > /home/pi/nw_status.txt\n")
+file.write("if [ $nw_status -eq 0 ]\n")
+file.write("then\n")
+#Only run price checks if we have network connection!
+if mode1OK == 1 and mode2OK == 1:
+  if mode1.modeFront == 0 or mode2.modeFront == 0: #Watchlist mode
     file.write("python /home/pi/stockcube/check_watchlist.py\n")
-if mode1.modeFront == 1 or mode2.modeFront == 1 or mode1.modeTop == 1 or mode2.modeTop == 1: #Portfolio mode
+  if mode1.modeFront == 1 or mode2.modeFront == 1 or mode1.modeTop == 1 or mode2.modeTop == 1: #Portfolio mode
     file.write("python /home/pi/stockcube/check_portfolio.py\n")
-if mode1.modeTop == 0 or mode2.modeTop == 0: #ETF mode
+  if mode1.modeTop == 0 or mode2.modeTop == 0: #ETF mode
     file.write("python /home/pi/stockcube/check_etfs.py\n")
-if mode1.modeTop == 2 or mode2.modeTop == 2: #Exchange mode
+  if mode1.modeTop == 2 or mode2.modeTop == 2: #Exchange mode
     file.write("python /home/pi/stockcube/check_exchanges.py\n")
+else:
+    file.write("python /home/pi/stockcube/check_etfs.py\n")
+    #If there were any issues with user modes,
+    #setup default mode20 file so stuff doesn't break (doesn't require any user setups)
+    modefile="/home/pi/stockcube/mode20"
+    if os.path.isfile("/home/pi/stockcube/SC_mode1"):
+        os.remove("/home/pi/stockcube/SC_mode1")
+    shutil.copy(modefile, "/home/pi/stockcube/SC_mode1")
+    if os.path.isfile("/home/pi/stockcube/SC_mode2"):
+        os.remove("/home/pi/stockcube/SC_mode2")
+    shutil.copy(modefile, "/home/pi/stockcube/SC_mode2")
+
 file.write("/home/pi/stockcube/nyse_status\n")
+file.write("fi\n")
 file.close()
 ps = subprocess.Popen(['sudo', 'chmod', '-R', 'a+x', '/home/pi/check_prices.sh'], stdout=subprocess.PIPE)
 
 time.sleep(2)
 
 font=ImageFont.load("/home/pi/fonts/9x18B.pil")
-draw.text((0,65), "Loading", (0,0,0),font=font)
-draw.text((13,80), "your", (0,0,0),font=font)
-draw.text((9,95), "setup", (0,0,0),font=font)
+y_coord=65
+draw.text((0,y_coord), "Loading", (0,0,0),font=font)
+draw.text((13,y_coord+15), "your", (0,0,0),font=font)
+draw.text((9,y_coord+15+15), "setup", (0,0,0),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
 
-#Unmount USB stick safely
+#Unmount USB stick safely - done in startup.sh
 #ps = subprocess.Popen(['sudo', 'umount', '-f', '/media/pi/SCSETUP'], stdout=subprocess.PIPE)
 
 font=ImageFont.load("/home/pi/fonts/6x10.pil")
-draw.text((15,66), "Setup", (255,255,255),font=font)
-draw.text((5,76), "complete!", (255,255,255),font=font)
+draw.text((15,65), "Setup", (255,255,255),font=font)
+draw.text((5,75), "complete!", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(1)
 
-draw.text((15,96), "Please", (0,0,255),font=font)
-draw.text((15,106), "remove", (0,0,255),font=font)
-draw.text((4,116), "USB stick", (0,0,255),font=font)
+draw.text((15,91), "Please", (0,0,255),font=font)
+draw.text((15,101), "remove", (0,0,255),font=font)
+draw.text((4,111), "USB stick", (0,0,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(1)
 
@@ -345,11 +393,11 @@ while usb_removed < 1:
         usb_removed=0
     time.sleep(2)
 
-draw.text((15,96), "Please", (0,0,0),font=font)
-draw.text((15,106), "remove", (0,0,0),font=font)
-draw.text((4,116), "USB stick", (0,0,0),font=font)
+draw.text((15,91), "Please", (0,0,0),font=font)
+draw.text((15,101), "remove", (0,0,0),font=font)
+draw.text((4,111), "USB stick", (0,0,0),font=font)
 matrix.SetImage(image.convert('RGB'))
 
-draw.text((5,106), "Let's go!", (0,255,0),font=font)
+draw.text((5,101), "Let's go!", (0,255,0),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(4)

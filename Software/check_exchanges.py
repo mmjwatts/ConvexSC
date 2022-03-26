@@ -43,7 +43,7 @@ for x in range(num_tickers):
 		c = yf.Ticker(ticker_to_check + "USD=X")
 		quote=c.history(period='1d', interval='1m')
 		quote_now=quote.Open[-1]
-		quote=c.history(period='2d', interval='1d') #This automatically only gives data for live trading days
+		quote=c.history(period='5d', interval='1d') #This automatically only gives data for live trading days
 		quote_yest=quote.Close[-2]
 		list[x].current_price = quote_now
 		list[x].daily_change = quote_now-quote_yest

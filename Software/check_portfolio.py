@@ -31,8 +31,8 @@ list = []
 with open("/home/pi/Setup/portfolio.txt") as f:	#Open portfolio file for reading
 	for line in f: #iterate over each line
 		type, ticker, quantity, open_price, leverage = line.split()
-		quantity = float(quantity)
-		open_price = float(open_price)
+		quantity = float(quantity.replace(',',''))
+		open_price = float(open_price.replace(',',''))
 		leverage = float(leverage)
 		list.append( StockTicker(type, ticker, quantity, open_price, leverage, 0, 0, 0, 0, 0, 0, 0))
 		num_tickers = num_tickers + 1

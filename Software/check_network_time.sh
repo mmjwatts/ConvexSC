@@ -2,7 +2,8 @@
 
 #Check network connection is OK:
 attempts=0
-while [ $attempts -lt 5 ]
+tries=$1
+while [ $attempts -lt $tries ]
 do
   ping -c1 google.com >/dev/null 2>&1
   result=$?
@@ -15,7 +16,6 @@ do
     then
       exit 0
     else #Network time not synchronised - try and force it...
-      echo "Restarting timedatectl to force sync"
       sudo systemctl restart systemd-timedated >/dev/null 2>&1
       sleep 2
       timedatectl status | grep synchronized | grep yes >/dev/null 2>&1
@@ -28,8 +28,10 @@ do
       fi
     fi
   else
-    echo "no network connection"
-    sleep 2
+    if [ $tries -gt 1 ] #Only sleep here if trying more than once
+    then
+      sleep 2
+    fi
     attempts=$[$attempts+1]
   fi
 done

@@ -9,37 +9,10 @@ import threading
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageFont, ImageDraw
 
-des_mac_app = r'/media/pi/SCSETUP/SCSetup_Mac.app'
-src_mac_app = r'/media/pi/SCSETUP/Setup/github/Software/Utils/SCSetup_Mac.app'
-
-des_windows_app = r'/media/pi/SCSETUP/WindowsUtils/'
-src_windows_app = r'/media/pi/SCSETUP/Setup/github/Software/Utils/WindowsUtils/'
-des_windows_bat = r'/media/pi/SCSETUP/SCSetup_Win.bat'
-src_windows_bat = r'/media/pi/SCSETUP/Setup/github/Software/Utils/SCSetup_Win.bat'
-
+src_folder = r'/home/pi/update/'
 
 global copy_done
 global percentage
-
-def checker(source_path, destination_path):
-
-    #Make sure the destination path exists
-    while not os.path.exists(destination_path):
-        print "doesn't exist"
-        time.sleep(0.5)
-
-    #Keep checking the file size until it's the same as source file
-    while os.path.getsize(source_path) != os.path.getsize(destination_path):
-        percentage = int((float(os.path.get_size(destination_path))/float(os.path.get_size(source_path))) * 100)
-        time.sleep(1)
-	print(percentage)
-
-    percentage = 100
-
-def copying_file(source_path, destination_path):
-
-    shutil.copytree(source_path, destination_path)
-    copy_done = 1
 
 config = {}
 with open("/config/cube.txt") as f:
@@ -141,78 +114,46 @@ time.sleep(0.1)
 time.sleep(0.5)
 
 font=ImageFont.load("/home/pi/fonts/6x10_SC.pil")
-draw.text((0,19), "Stock cube:", (255,255,255),font=font)
+draw.text((0,29), "  Progress:", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
 
-draw.line((4, 84, 4, 90), fill=(255,255,255))
-draw.line((59, 84, 59, 90), fill=(255,255,255))
-draw.line((4, 84, 59, 84), fill=(255,255,255))
-draw.line((4, 90, 59, 90), fill=(255,255,255))
+draw.line((4, 94, 4, 100), fill=(255,255,255))
+draw.line((59, 94, 59, 100), fill=(255,255,255))
+draw.line((4, 94, 59, 94), fill=(255,255,255))
+draw.line((4, 100, 59, 100), fill=(255,255,255))
 
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
 
 for x in range(54):
-    draw.line((5+x, 85, 5+x, 89), fill=(0,255,0))
+    draw.line((5+x, 95, 5+x, 99), fill=(0,255,0))
     if x > 1:
-        draw.line((5+x-1, 85, 5+x-1, 89), fill=(0,200,0))
+        draw.line((5+x-1, 95, 5+x-1, 99), fill=(0,200,0))
         if x > 2:
-            draw.line((5+x-2, 85, 5+x-2, 89), fill=(0,150,0))
-    time.sleep(0.05)
+            draw.line((5+x-2, 95, 5+x-2, 99), fill=(0,150,0))
+    time.sleep(0.15)
     matrix.SetImage(image.convert('RGB'))
 try:
-    src_folder="/media/pi/SCSETUP/Setup/github/Software/"
-    dest_folder="/home/pi/stockcube/"
-    for f in os.listdir(src_folder):
-        if os.path.isfile(f):
-            shutil.copy(os.path.join(src_folder, f), dest_folder)
-
-    #ps = subprocess.Popen(['sudo', 'mv', '/media/pi/SCSETUP/Software/*', '/home/pi/stockcube/'], stdout=subprocess.PIPE)
-    ps = subprocess.Popen(['sudo', 'chmod', '-R', 'a+rwx', '/home/pi/stockcube/'], stdout=subprocess.PIPE)
-    if os.path.isfile("/home/pi/stockcube/Version.py"):
-        os.remove("/home/pi/stockcube/Version.py")
-    shutil.copy("/media/pi/SCSETUP/Setup/github/Software/Version.py", "/home/pi/stockcube/")
-    time.sleep(1)
-    #ps = subprocess.Popen(['sudo', 'mv', '/media/pi/SCSETUP/Setup/Version.py', '/home/pi/stockcube/'], stdout=subprocess.PIPE)
-    ps = subprocess.Popen(['sudo', 'chmod', 'a+r', '/home/pi/stockcube/Version.py'], stdout=subprocess.PIPE)
-
-    if os.path.isfile("/media/pi/SCSETUP/Setup/GHVersion.py"):
-        os.remove("/media/pi/SCSETUP/Setup/GHVersion.py")
+    dest_folder="/home/pi/stockcube_test/"
+    if os.path.isdir(dest_folder):
+       shutil.rmtree(dest_folder)
+#    for f in os.listdir(src_folder):
+#        if os.path.isfile(f):
+    shutil.copytree(src_folder, dest_folder)
 
     time.sleep(1)
-    draw.rectangle((4, 84, 59, 90), fill=(0,0,0), outline=(0,0,0))
-    draw.text((4,83), "Complete", (0,255,0),font=font)
+    draw.rectangle((4, 94, 59, 100), fill=(0,0,0), outline=(0,0,0))
+    draw.text((4,93), "Complete", (0,255,0),font=font)
     matrix.SetImage(image.convert('RGB'))
     time.sleep(0.5)
 
 except Exception as e:
     print(e)
-    draw.text((4,83), "Error 1", (255,0,0),font=font)
+    draw.text((4,93), "Error 1", (255,0,0),font=font)
     matrix.SetImage(image.convert('RGB'))
     time.sleep(1)
 
-#Now copy new version file to Setup folder of USB stick
-shutil.copy("/home/pi/stockcube/Version.py", "/media/pi/SCSETUP/Setup/")
-
-draw.text((0,33), "Setup tool:", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(0.5)
-
-draw.rectangle((5, 100, 58, 104), fill=(0,255,0), outline=(0,255,0))
-time.sleep(1)
-draw.text((4,98), "No update", (0,255,0),font=font2)
-matrix.SetImage(image.convert('RGB'))
-time.sleep(1)
-
-draw.text((20,50), "Please", (255,255,255),font=font)
-draw.text((2,114), "wait...", (255,255,255),font=font)
-matrix.SetImage(image.convert('RGB'))
-
-shutil.rmtree("/media/pi/SCSETUP/Setup/github/")
-
-draw.text((20,50), "Please", (0,0,0),font=font)
-draw.text((2,114), "wait...", (0,0,0),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(1)
 
@@ -221,4 +162,14 @@ draw.text((20,50), "Update", (0,255,0),font=font)
 draw.text((2,114), "complete", (0,255,0),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(3)
+draw.text((20,50), "Update", (0,0,0),font=font)
+draw.text((2,114), "complete", (0,0,0),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.5)
+draw.text((0,50), "Rebooting", (0,255,0),font=font)
+draw.text((2,114), "now...", (0,255,0),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(3)
+
+ps = subprocess.Popen(['sudo', 'reboot'], stdout=subprocess.PIPE)
 

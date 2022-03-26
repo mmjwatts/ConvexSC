@@ -6,6 +6,7 @@ GPIO_PATH=/sys/class/gpio
 SW_PATH=/home/pi/stockcube
 SETUP_DISK=/media/pi/SCSETUP
 SETUP_PATH=/home/pi/Setup
+UPDATE_PATH=/home/pi/update
 TEST_DISK=/media/pi/SCTEST
 TEST_PATH=$SW_PATH/test
 
@@ -33,14 +34,21 @@ readyfile=$SW_PATH/ready.txt
 if [ -f $readyfile ]
 then
   echo "Existing Stock Cube setup found"
-#  if [ $mode1 -eq 1 ] || [ $mode2 -eq 1 ]
-#  then
-    await_setup=0 #Goes into run mode
-#  else
-#    echo "Mode 0 selected - entering setup mode"
-#  fi
+  await_setup=0 #Goes into run mode
 else
   echo "No existing Stock Cube setup found"
+fi
+
+#Check for phantom SCSETUP directory and remove if present!
+if [ -e $SETUP_DISK ]
+then
+  #This checks if there are any files or folders within $SETUP disk directory
+  #If not, it's a phantom and we should delete it so USB stick can be mounted
+  contents='ls $SETUP_DISK | wc -l'
+  if [ $contents -eq 0 ]
+  then
+    rm -rf $SETUP_DISK
+  fi
 fi
 
 while $TRUE
@@ -57,6 +65,7 @@ do
       echo "Found setup disk"
       #Copy cube logs onto setup disk
       mkdir -p $SETUP_DISK/logs/cubeLogs/
+      ifconfig wlan0 > $SW_PATH/logs/wireless_info.txt
       cp -r $SW_PATH/logs/* $SETUP_DISK/logs/cubelogs/
       cp -r /home/pi/recovery/logs/* $SETUP_DISK/logs/cubelogs/
       #Copy all files from USB stick to relevant directories
@@ -80,17 +89,20 @@ do
       then
 	source $SETUP_DISK/Setup/github/Software/Version.py
         disk_version=$Version
-        disk_app_version=$AppVersion
-	mkdir -p $SETUP_PATH/logs/cubeLogs/
-        cp -r $SW_PATH/logs/* $SETUP_DISK/logs/cubelogs/
         if awk "BEGIN {exit !($disk_version > $curr_version)}"; then
+	  if [ -e $UPDATE_PATH ]
+	  then
+	     rm -rf $UPDATE_PATH
+	  fi
+	  cp -r $SETUP_DISK/Setup/github/Software $UPDATE_PATH
+	  #Copy new version info back onto USB (this assumes following all runs OK, but that feels fair...)
+	  cp $SETUP_DISK/Setup/github/Software/Version.py $SETUP_DISK/Setup/
+	  rm -rf $SETUP_DISK/Setup/github/
+	  chmod a+rwx $UPDATE_PATH/*
+          sleep 2
+          umount -f $SETUP_DISK
           echo "Software update available - copying update script into place and exiting startup"
-          if awk "BEGIN {exit !($disk_app_version > $curr_app_version)}"; then
-            echo "Also updating USB apps"
-            cp $SETUP_DISK/Setup/github/Software/Utils/update_inc_app.py /home/pi/update.py
-          else
-            cp $SETUP_DISK/Setup/github/Software/Utils/update.py /home/pi/
-          fi
+          cp $UPDATE_PATH/update.py /home/pi/
           chmod a+x /home/pi/update.py
           logfile=update_log_$(date +'%Y%m%d_%H%M')
           echo "Attempting Stock Cube update from $curr_version to $disk_version" > $SW_PATH/logs/$logfile.txt
@@ -104,8 +116,6 @@ do
       echo "Running Cube setup"
       mkdir -p $SETUP_PATH
       cp $SETUP_DISK/Setup/* $SETUP_PATH
-      mkdir -p $SETUP_PATH/logs/cubeLogs/
-      cp -r $SW_PATH/logs/* $SETUP_DISK/logs/cubelogs/
       sleep 2
       umount -f $SETUP_DISK
       logfile=setup_log_$(date +'%Y%m%d_%H%M')
@@ -122,7 +132,7 @@ do
       mkdir -p $TEST_PATH
       cp $TEST_DISK/* $TEST_PATH
       chmod a+x $TEST_PATH/*
-      sudo eject $TEST_DISK
+      umount $TEST_DISK
       sudo $TEST_PATH/SCtest.sh
     else
       /home/pi/stockcube/led-image-viewer --led-rows=64 --led-cols=192 --led-rgb-sequence="$ColourMap" --led-pixel-mapper="Rotate:90" --led-brightness=70 /home/pi/stockcube/WelcomeScreen.bmp &
@@ -159,13 +169,16 @@ do
   #Mode 1 requested:
   if [ $mode1 -eq 1 ] && [ $await_setup -eq 0 ]
   then
+    nw_mode=0
+    show_clock=0
+    scrolling=1 #Default to scrolling mode
+    source $SETUP_PATH/mode1.py #If variables above exist in this setup file, this overwrites them with setup values
     if [ $check_network -eq 1 ]
     then
-      $SW_PATH/check_network_time.sh #Returns 0 if all OK, 1 if no time sync, 2 if no network...
+      $SW_PATH/check_network_time.sh 5 #Returns 0 if all OK, 1 if no time sync, 2 if no network...
       result=$?
       if [ $result -eq 0 ]
       then
-        sudo -H -u pi python $SW_PATH/get_local_timezone.py
         sudo -H -u pi python $SW_PATH/check_api.py
         check_network=0
       else
@@ -173,16 +186,22 @@ do
         then
           #Can't get correct time - tell user will run in offline mode, and set NYSE status to Closed
           echo "Closed" > /home/pi/nyse_status.txt
-          sudo -H -u pi python /home/pi/stockcube/networkerror.py
+          sudo -H -u pi python /home/pi/stockcube/networkerror.py &
+	  process=$!
         else #Network OK, time not updated
           echo "Closed" > /home/pi/nyse_status.txt
           sudo -H -u pi python /home/pi/stockcube/timeerror.py
+	  check_network=0
+	  nw_mode=1 #Force display of network status on top screen
         fi
       fi
     fi
-    source $SETUP_PATH/mode1.py
-    nice -n -20 $SW_PATH/SC_mode1 --led-rgb-sequence="$ColourMap" -b $modeBrightness &
-    process=$!
+    #If check_network is still 1, there is a network issue so leave screens driven by networkerror.py
+    if [ $check_network -eq 0 ] #This is either 0 already, or has been changed by checks above
+    then
+      nice -n -20 $SW_PATH/SC_mode1 --led-rgb-sequence="$ColourMap" -b $modeBrightness -n $nw_mode -c $show_clock -s $scrolling &
+      process=$!
+    fi
 
     read mode1 < $GPIO_PATH/gpio2/value
     while [ $mode1 -eq 1 ]
@@ -201,22 +220,39 @@ do
   #Mode 2 requested:
   if [ $mode2 -eq 1 ] && [ $await_setup -eq 0 ]
   then
+    nw_mode=0
+    show_clock=0
+    scrolling=1
+    source $SETUP_PATH/mode2.py #If variables above exist in this setup file, this overwrites them with setup values
     if [ $check_network -eq 1 ]
     then
-      $SW_PATH/check_network_time.sh #Returns 0 if all OK, 1 if no time sync, 2 if no network...
+      $SW_PATH/check_network_time.sh 5 #Returns 0 if all OK, 1 if no time sync, 2 if no network...
       result=$?
       if [ $result -eq 0 ]
       then
-        sudo -H -u pi python $SW_PATH/get_local_timezone.py
+        sudo -H -u pi python $SW_PATH/check_api.py
         check_network=0
       else
-        #Can't get correct time - tell user will be running in demo mode? Pass new variable to tools to indicate not live prices?
-        sudo -H -u pi python /home/pi/stockcube/timeerror.py
+        if [ $result -eq 2 ] #No internet connection
+        then
+          #Can't get correct time - tell user will run in offline mode, and set NYSE status to Closed
+          echo "Closed" > /home/pi/nyse_status.txt
+          sudo -H -u pi python /home/pi/stockcube/networkerror.py &
+	  process=$!
+        else #Network OK, time not updated
+          echo "Closed" > /home/pi/nyse_status.txt
+          sudo -H -u pi python /home/pi/stockcube/timeerror.py
+	  check_network=0
+	  nw_mode=1 #Force display of network status on top screen
+        fi
       fi
     fi
-    source $SETUP_PATH/mode2.py
-    nice -n -20 $SW_PATH/SC_mode2 --led-rgb-sequence="$ColourMap" -b $modeBrightness &
-    process=$!
+    #If check_network is still 1, there is a network issue so leave screens driven by networkerror.py
+    if [ $check_network -eq 0 ] #This is either 0 already, or has been changed by checks above
+    then
+      nice -n -20 $SW_PATH/SC_mode2 --led-rgb-sequence="$ColourMap" -b $modeBrightness -n $nw_mode -c $show_clock -s $scrolling &
+      process=$!
+    fi
 
     read mode2 < $GPIO_PATH/gpio3/value
     while [ $mode2 -eq 1 ]

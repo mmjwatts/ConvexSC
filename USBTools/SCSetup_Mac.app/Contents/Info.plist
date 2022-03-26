@@ -17,9 +17,9 @@
     <key>LSBackgroundOnly</key>
     <string>0</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>0.0.0</string>
     <key>CFBundleVersion</key>
-    <string>1.0.0</string>
+    <string>0.0.0</string>
     <key>CFBundleName</key>
     <string>SCSetup_Mac</string>
     <!-- Enable Retina support on OS X: -->

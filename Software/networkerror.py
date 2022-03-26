@@ -56,25 +56,106 @@ time.sleep(2)
 #font=ImageFont.load("/home/pi/fonts/9x18B.pil")
 #font=ImageFont.load("/home/pi/fonts/7x13B.pil")
 font=ImageFont.load("/home/pi/fonts/6x9_MWa.pil")
+font2=ImageFont.load("/home/pi/fonts/6x10.pil")
 
-draw.text((0,65), "No live", (255,255,255),font=font)
+draw.text((0,1), "Network", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-draw.text((0,75), "network", (255,255,255),font=font)
+draw.text((0,11), "connection", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-draw.text((0,85), "connection", (255,255,255),font=font)
+draw.text((0,21), "error", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
 time.sleep(1)
-draw.text((0,100), "Running", (255,255,255),font=font)
-draw.text((0,110), "offline mode", (255,255,255),font=font)
+draw.text((0,41), "Trying", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.1)
+draw.text((0,51), "again", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 
-#font=ImageFont.load("/home/pi/fonts/5x7.pil")
-#font=ImageFont.load("/home/pi/fonts/6x10.pil")
+#Show N/C first and copy debug files before retries as we're in here due to no network in theory
+time.sleep(1)
+draw.text((2,64), "Wifi", (255,255,255),font=font2)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.5)
+draw.text((44,64), "N/C", (255,125,0),font=font2)
+matrix.SetImage(image.convert('RGB'))
 
-time.sleep(5)
+#First "try" doesn't attempt reconnect, but grabs all sorts of logs
+tries=1
+draw.text((2,118), "Try:", (255,255,255),font=font2)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(0.5)
+draw.text((44,118), str(tries), (0,0,255),font=font2)
+matrix.SetImage(image.convert('RGB'))
+
+
+#Grab wpa_supplicant and put in log folders. And output of "cat /proc/net/wireless"
+ps = subprocess.Popen(['sudo', 'mkdir', '-p', '/home/pi/stockcube/logs/wifi/'], stdout=subprocess.PIPE)
+shutil.copy("/etc/wpa_supplicant/wpa_supplicant.conf", "/home/pi/stockcube/logs/wifi/wpa_supplicant.conf")
+f = open("/home/pi/stockcube/logs/wifi/proc_status.txt", "w")
+ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=f)
+
+
+#Disable Wifi services, and run wpa_supplicant separately to see if it gives more information
+ps = subprocess.Popen(['sudo', 'systemctl', 'stop', 'dhcpcd'], stdout=subprocess.PIPE)
+print("killing networking...")
+time.sleep(3)
+ps = subprocess.Popen(['sudo', '/home/pi/stockcube/wpa_supp_debug.sh'], stdout=subprocess.PIPE)
+time.sleep(1)
+print("inside this wait")
+time.sleep(6)
+ps = subprocess.Popen(['sudo', 'killall', 'wpa_supplicant'], stdout=subprocess.PIPE)
+
+
+ps = subprocess.Popen(['sudo', 'systemctl', 'daemon-reload'], stdout=subprocess.PIPE)
+ps = subprocess.Popen(['sudo', 'systemctl', 'start', 'dhcpcd'], stdout=subprocess.PIPE)
+
+
+while 1:
+
+  tries=tries + 1
+  draw.line((0, 118, 64, 118), fill=(0,0,0))
+  draw.line((0, 119, 64, 119), fill=(0,0,0))
+  draw.line((0, 120, 64, 120), fill=(0,0,0))
+  draw.line((0, 121, 64, 121), fill=(0,0,0))
+  draw.line((0, 122, 64, 122), fill=(0,0,0))
+  draw.line((0, 123, 64, 123), fill=(0,0,0))
+  draw.line((0, 124, 64, 124), fill=(0,0,0))
+  draw.line((0, 125, 64, 125), fill=(0,0,0))
+  draw.line((0, 126, 64, 126), fill=(0,0,0))
+  draw.line((0, 127, 64, 127), fill=(0,0,0))
+
+  ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  try:
+      output = subprocess.check_output(('grep', 'wlan0'), stdin=ps.stdout)
+      #print("Connected to wifi!")
+      draw.text((44,64), "N/C", (0,0,0),font=font2)
+      matrix.SetImage(image.convert('RGB'))
+      draw.text((44,64), "OK", (0,255,0),font=font2)
+      time.sleep(1)
+      matrix.SetImage(image.convert('RGB'))
+      draw.text((0,90), "Connected!", (0,255,0),font=font)
+      time.sleep(1)
+      matrix.SetImage(image.convert('RGB'))
+      draw.text((0,100), "Switch mode", (0,255,0),font=font)
+      time.sleep(0.2)
+      matrix.SetImage(image.convert('RGB'))
+      draw.text((0,110), "to continue", (0,255,0),font=font)
+      matrix.SetImage(image.convert('RGB'))
+      while 1:
+        time.sleep(1)
+  except subprocess.CalledProcessError:
+      draw.text((2,118), "Try:", (255,255,255),font=font2)
+      matrix.SetImage(image.convert('RGB'))
+      time.sleep(0.5)
+      draw.text((44,118), str(tries), (0,0,255),font=font2)
+      matrix.SetImage(image.convert('RGB'))
+      ps = subprocess.Popen(['sudo', 'systemctl', 'daemon-reload'], stdout=subprocess.PIPE)
+      ps = subprocess.Popen(['sudo', 'systemctl', 'restart', 'dhcpcd'], stdout=subprocess.PIPE)
+      time.sleep(4)
+
