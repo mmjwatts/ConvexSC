@@ -99,7 +99,7 @@ ps = subprocess.Popen(['sudo', 'mkdir', '-p', '/home/pi/stockcube/logs/wifi/'], 
 ps = subprocess.Popen(['sudo', 'chmod', 'a+rw', '/home/pi/stockcube/logs/wifi/'], stdout=subprocess.PIPE)
 #shutil.copy("/etc/wpa_supplicant/wpa_supplicant.conf", "/home/pi/stockcube/logs/wifi/wpa_supplicant.conf")
 ps = subprocess.Popen(['sudo', 'cp', '/etc/wpa_supplicant/wpa_supplicant.conf', '/home/pi/stockcube/logs/wifi/wpa_supplicant.conf'], stdout=subprocess.PIPE)
-f = open("/home/pi/stockcube/logs/wifi/proc_status.txt", "w")
+f = open("/home/pi/stockcube/logs/wifi/proc_status.txt", "w+")
 ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=f)
 
 
