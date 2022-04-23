@@ -139,11 +139,12 @@ do
 #      sudo -H -u pi $SW_PATH/show_logo.py
       process=$!
       disk_found=0
+      setup_waits=0
       while [ $disk_found -eq 0 ] && (([ $mode1 -eq 0 ] && [ $mode2 -eq 0 ]) || [ $await_setup -eq 1 ])
       do
         read mode1 < $GPIO_PATH/gpio2/value
         read mode2 < $GPIO_PATH/gpio3/value
-
+	setup_waits=$[$setup_waits+1]	#Increment setup waits
         sleep 3
         if [ -e $SETUP_DISK ]
         then
@@ -157,6 +158,12 @@ do
         else
            echo "No disk found"
            disk_found=0
+	   if [ $setup_waits -eq 20 ] #Turns screens off after 60 seconds
+	   then
+             sudo kill -15 $process
+             sudo pkill -u daemon
+             sudo -H -u pi python /home/pi/stockcube/sleepinfo.py
+	   fi
         fi
       done
       echo "Killing process $process"

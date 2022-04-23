@@ -58,26 +58,30 @@ time.sleep(2)
 font=ImageFont.load("/home/pi/fonts/6x9_MWa.pil")
 font2=ImageFont.load("/home/pi/fonts/6x10.pil")
 
-draw.text((0,1), "Awaiting", (255,255,255),font=font)
+draw.text((0,1), "Putting", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-draw.text((0,11), "network", (255,255,255),font=font)
+draw.text((0,11), "Stock Cube", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-draw.text((0,21), "connection", (255,255,255),font=font)
+draw.text((0,21), "into sleep", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-draw.text((0,31), "please", (255,255,255),font=font)
+draw.text((0,31), "mode.", (255,255,255),font=font)
+matrix.SetImage(image.convert('RGB'))
+time.sleep(1)
+
+draw.text((0,41), "Switch mode", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-draw.text((0,41), "wait...", (255,255,255),font=font)
+draw.text((0,51), "to wake up", (255,255,255),font=font)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.1)
 
-while 1:
-  time.sleep(10)
+time.sleep(5)
+
 

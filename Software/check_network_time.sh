@@ -17,7 +17,7 @@ do
       exit 0
     else #Network time not synchronised - try and force it...
       sudo systemctl restart systemd-timedated >/dev/null 2>&1
-      sleep 2
+      sleep 4
       timedatectl status | grep synchronized | grep yes >/dev/null 2>&1
       result=$?
       if [ $result -eq 0 ] #network time synchronised!
