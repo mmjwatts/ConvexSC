@@ -175,8 +175,10 @@ do
     source $SETUP_PATH/mode1.py #If variables above exist in this setup file, this overwrites them with setup values
     if [ $check_network -eq 1 ]
     then
-      $SW_PATH/check_network_time.sh 5 #Returns 0 if all OK, 1 if no time sync, 2 if no network...
+      sudo -H -u pi python /home/pi/stockcube/networkinfo.py &
+      $SW_PATH/check_network_time.sh 20 #Returns 0 if all OK, 1 if no time sync, 2 if no network...
       result=$?
+      sudo pkill -f networkinfo
       if [ $result -eq 0 ]
       then
         sudo -H -u pi python $SW_PATH/check_api.py
@@ -227,8 +229,10 @@ do
     source $SETUP_PATH/mode2.py #If variables above exist in this setup file, this overwrites them with setup values
     if [ $check_network -eq 1 ]
     then
-      $SW_PATH/check_network_time.sh 5 #Returns 0 if all OK, 1 if no time sync, 2 if no network...
+      sudo -H -u pi python /home/pi/stockcube/networkinfo.py &
+      $SW_PATH/check_network_time.sh 20 #Returns 0 if all OK, 1 if no time sync, 2 if no network...
       result=$?
+      sudo pkill -f networkinfo
       if [ $result -eq 0 ]
       then
         sudo -H -u pi python $SW_PATH/check_api.py
