@@ -96,7 +96,9 @@ matrix.SetImage(image.convert('RGB'))
 
 #Grab wpa_supplicant and put in log folders. And output of "cat /proc/net/wireless"
 ps = subprocess.Popen(['sudo', 'mkdir', '-p', '/home/pi/stockcube/logs/wifi/'], stdout=subprocess.PIPE)
-shutil.copy("/etc/wpa_supplicant/wpa_supplicant.conf", "/home/pi/stockcube/logs/wifi/wpa_supplicant.conf")
+ps = subprocess.Popen(['sudo', 'chmod', 'a+rw', '/home/pi/stockcube/logs/wifi/'], stdout=subprocess.PIPE)
+#shutil.copy("/etc/wpa_supplicant/wpa_supplicant.conf", "/home/pi/stockcube/logs/wifi/wpa_supplicant.conf")
+ps = subprocess.Popen(['sudo', 'cp', '/etc/wpa_supplicant/wpa_supplicant.conf', '/home/pi/stockcube/logs/wifi/wpa_supplicant.conf'], stdout=subprocess.PIPE)
 f = open("/home/pi/stockcube/logs/wifi/proc_status.txt", "w")
 ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=f)
 
@@ -106,8 +108,6 @@ ps = subprocess.Popen(['sudo', 'systemctl', 'stop', 'dhcpcd'], stdout=subprocess
 print("killing networking...")
 time.sleep(3)
 ps = subprocess.Popen(['sudo', '/home/pi/stockcube/wpa_supp_debug.sh'], stdout=subprocess.PIPE)
-time.sleep(1)
-print("inside this wait")
 time.sleep(6)
 ps = subprocess.Popen(['sudo', 'killall', 'wpa_supplicant'], stdout=subprocess.PIPE)
 
@@ -115,6 +115,9 @@ ps = subprocess.Popen(['sudo', 'killall', 'wpa_supplicant'], stdout=subprocess.P
 ps = subprocess.Popen(['sudo', 'systemctl', 'daemon-reload'], stdout=subprocess.PIPE)
 ps = subprocess.Popen(['sudo', 'systemctl', 'start', 'dhcpcd'], stdout=subprocess.PIPE)
 
+#Specifically reenable wlan0 in case it's somehow been turned off...
+ps = subprocess.Popen(['sudo', 'rfkill', 'unblock', '0'], stdout=subprocess.PIPE)
+ps = subprocess.Popen(['sudo', 'ifconfig', 'wlan0', 'up'], stdout=subprocess.PIPE)
 
 while 1:
 

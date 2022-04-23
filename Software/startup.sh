@@ -215,6 +215,7 @@ do
 
     kill $process
     sudo pkill -u daemon
+    sudo pkill -f networkerror
   fi
 
   #Mode 2 requested:
@@ -266,6 +267,7 @@ do
 
     kill $process
     sudo pkill -u daemon
+    sudo pkill -f networkerror
   fi
 
   #sleep 1
