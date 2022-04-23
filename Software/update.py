@@ -135,13 +135,12 @@ for x in range(54):
     time.sleep(0.15)
     matrix.SetImage(image.convert('RGB'))
 try:
-    dest_folder="/home/pi/stockcube/"
+    dest_folder="/home/pi/stockcube"
     if os.path.isdir(dest_folder):
-       shutil.rmtree(dest_folder)
-#    for f in os.listdir(src_folder):
-#        if os.path.isfile(f):
-    shutil.copytree(src_folder, dest_folder)
+       ps = subprocess.Popen(['sudo', 'rm', '-rf', dest_folder], stdout=subprocess.PIPE)
+    time.sleep(1)
 
+    shutil.copytree(src_folder, dest_folder)
     time.sleep(1)
     draw.rectangle((4, 94, 59, 100), fill=(0,0,0), outline=(0,0,0))
     draw.text((4,93), "Complete", (0,255,0),font=font)
