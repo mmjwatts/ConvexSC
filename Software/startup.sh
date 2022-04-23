@@ -42,11 +42,13 @@ fi
 #Check for phantom SCSETUP directory and remove if present!
 if [ -e $SETUP_DISK ]
 then
-  #This checks if there are any files or folders within $SETUP disk directory
+  #This checks if there are any files or folders within $SETUP/Setup disk directory
   #If not, it's a phantom and we should delete it so USB stick can be mounted
-  contents='ls $SETUP_DISK | wc -l'
+  #We might have created a phantom logs folder so need to check Setup folder specifically
+  contents='ls $SETUP_DISK/Setup | wc -l'
   if [ $contents -eq 0 ]
   then
+    umount $SETUP_DISK #Ensures we try a umount just in case there is really a Setup disk there!
     rm -rf $SETUP_DISK
   fi
 fi
