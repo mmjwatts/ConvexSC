@@ -1,2 +1,2 @@
-Version=1.11
+Version=1.2
 AppVersion=1.1
