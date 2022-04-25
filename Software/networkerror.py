@@ -82,26 +82,41 @@ time.sleep(1)
 draw.text((2,64), "Wifi", (255,255,255),font=font2)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
+
+
+#Grab wpa_supplicant and put in log folders. And output of "cat /proc/net/wireless"
+ps = subprocess.Popen(['sudo', 'mkdir', '-p', '/home/pi/stockcube/logs/wifi/'], stdout=subprocess.PIPE)
+time.sleep(1)
+
 draw.text((44,64), "N/C", (255,125,0),font=font2)
 matrix.SetImage(image.convert('RGB'))
+
+
+ps = subprocess.Popen(['sudo', 'chmod', '-R', 'a+rw', '/home/pi/stockcube/logs/wifi/'], stdout=subprocess.PIPE)
+time.sleep(1)
 
 #First "try" doesn't attempt reconnect, but grabs all sorts of logs
 tries=1
 draw.text((2,118), "Try:", (255,255,255),font=font2)
 matrix.SetImage(image.convert('RGB'))
 time.sleep(0.5)
+
+ps = subprocess.Popen(['sudo', 'cp', '/etc/wpa_supplicant/wpa_supplicant.conf', '/home/pi/stockcube/logs/wifi/wpa_supplicant.conf'], stdout=subprocess.PIPE)
+time.sleep(1)
+
 draw.text((44,118), str(tries), (0,0,255),font=font2)
 matrix.SetImage(image.convert('RGB'))
 
-
-#Grab wpa_supplicant and put in log folders. And output of "cat /proc/net/wireless"
-ps = subprocess.Popen(['sudo', 'mkdir', '-p', '/home/pi/stockcube/logs/wifi/'], stdout=subprocess.PIPE)
-ps = subprocess.Popen(['sudo', 'chmod', '-R', 'a+rw', '/home/pi/stockcube/logs/wifi'], stdout=subprocess.PIPE)
-#shutil.copy("/etc/wpa_supplicant/wpa_supplicant.conf", "/home/pi/stockcube/logs/wifi/wpa_supplicant.conf")
-ps = subprocess.Popen(['sudo', 'cp', '/etc/wpa_supplicant/wpa_supplicant.conf', '/home/pi/stockcube/logs/wifi/wpa_supplicant.conf'], stdout=subprocess.PIPE)
-f = open("/home/pi/stockcube/logs/wifi/proc_status.txt", "w+")
-ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=f)
-
+filename='/home/pi/stockcube/logs/wifi/proc_status.txt'
+try:
+  f = open(filename, "w+")
+  ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=f)
+except:
+  try:
+    f = open(filename, "w+")
+    ps = subprocess.Popen(['cat', '/proc/net/wireless'], stdout=f)
+  except:
+    print("Failed to open proc_status file")
 
 #Disable Wifi services, and run wpa_supplicant separately to see if it gives more information
 ps = subprocess.Popen(['sudo', 'systemctl', 'stop', 'dhcpcd'], stdout=subprocess.PIPE)
