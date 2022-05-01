@@ -1,1 +1,0 @@
-START WindowsUtils\StockCubeSetup.EXE
